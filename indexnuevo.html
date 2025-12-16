@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReCell - Tienda Online</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!--Añade el icono a la ventana de tu paguina web-->
+    <link rel="shortcut icon" href="img/favicon.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!--ENCABEZADO CONTIENE LOGO Y BOTONES EN LA DERECHA-->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <a href="indexnuevo.html">RECELL</a>
+            </div>
+                <!--BOTONES UBICADOS A LA IZQUIERDA INGRESO Y CARRITO-->
+            <div class="header-buttons">
+
+                <div id="userMenuContainer" class="user-menu-container">
+                    <button class="btn-header" id="btnLoginHeader" onclick="mostrarLoginModal()">
+                        <i class="fas fa-user"></i> Ingresar</button>
+                </div>
+
+                <button class="btn-header cart-btn" onclick="openCart()">
+                    <i class="fas fa-shopping-cart"></i> Carrito
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+    
+            </div>
+
+        </div>
+
+    </header>
+
+    <!--VENTANA EMERGENTE DE INGRESO A LA PLATAFORMA ADMIN O CLIENTE -->
+    <div id="login-container" class="login-overlay" style="display: none;">
+        <div class="login-box">
+            <span class="close-btn" onclick="cerrarLoginModal()">&times;</span>
+            <h2>Ingresar al Sistema</h2>
+            <input type="text" id="usuarioInput" placeholder="Usuario (admin o cliente)">
+
+            <button onclick="iniciarSesion()"
+                style="background: #007bff; color: white; border: none; padding: 10px; width: 100%; margin-top: 10px; cursor: pointer; border-radius: 5px; font-weight: bold;">Entrar</button>
+
+            <button
+                style="background: #ccc; color: #666; border: none; padding: 10px; width: 100%; margin-top: 10px; cursor: not-allowed; border-radius: 5px;"
+                disabled>
+                Registro (Próximamente)
+            </button>
+
+            <button
+                style="background: #ccc; color: #666; border: none; padding: 10px; width: 100%; margin-top: 10px; cursor: not-allowed; border-radius: 5px;"
+                disabled>
+                Consultar Servicios (Próximamente)
+            </button>
+
+            <p><small>Pista: Usa "admin" para subir productos.</small></p>
+        </div>
+    </div>
+
+
+
+    <!--------------------------------------------CARRUSEL-------------------------------------------------------------------->
+
+    <section class="hero-carrusel">
+        <!--Este corresponde al Slide1 Samsung S25-->
+        <div class="slide activo">
+            <video autoplay muted loop playsinline poster="img/VideoS25.mp4">
+                <source src="img/VideoS25.mp4" type="video/mp4">
+            </video>
+
+            <div class="slide-texto">
+                <h2>NUEVO GALAXY S25 ULTRA</h2>
+                <p>La inteligencia artificial llegó a tus manos.</p>
+                <button
+                    onclick="window.open('https://www.samsung.com/latin/smartphones/galaxy-s24-ultra/', '_blank')">Ver
+                    Más
+                </button>
+            </div>
+        </div>
+        <!--Este corresponde al Slide2 Operadoras-->
+        <div class="slide">
+
+            <video autoplay muted loop playsinline poster="img/transaccion.mp4">
+                <source src="img/transaccion.mp4" type="video/mp4">
+            </video>
+
+            <div class="slide-texto">
+                <h2>RECARGAS AL INSTANTE</h2>
+                <p>Mantente conectado con todas las operadoras.</p>
+                <button onclick="filtrarProductos('recargas')">Recargar Ahora</button>
+            </div>
+        </div>
+
+        <!--Este corresponde al Slide3 IPHONE-->
+        <div class="slide">
+            <video autoplay muted loop playsinline poster="img/videoPhone.mp4">
+                <source src="img/videoPhone.mp4" type="video/mp4">
+            </video>
+
+            <div class="slide-texto">
+                <h2>Estrena tu Nuevo IPhone</h2>
+                <p>💥Caracteristicas y Funcionalidades que SobreSalen💥</p>
+                <button onclick="filtrarProductos('dispositivos')">Recargar Ahora</button>
+            </div>
+        </div>
+
+        
+        <!--Este corresponde al Slide4 Monedas-->
+        <div class="slide">
+            <video autoplay muted loop playsinline poster="img/videoMonedas.mp4">
+                <source src="img/videoMonedas.mp4" type="video/mp4">
+            </video>
+
+            <div class="slide-texto">
+                <h2>MONEDAS PARA JUEGOS</h2>
+                <p>Compra paquetes para Free Fire, Roblox y Call of Duty al instante.</p>
+                <button onclick="filtrarProductos('monedas')">Comprar Monedas</button>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar-wave" id="barraProgreso"></div>
+        </div>
+        
+
+    </section>
+
+    <!------------------------------------------------------CLASE PRINCIPAL---------------------------------------------->
+    <main class="container" id="mainContainer">
+
+        <!--PANEL DE ADMINISTRACION SOLO USO ADMIN-->
+        <section id="admin-panel" class="scroll-panel" style="display: none;">
+            <div class="container-admin-interno">
+                <h2 style="color: #333; margin-bottom: 15px;">🛠 Panel de Administración</h2>
+                <div class="formulario-producto" style="background: white; padding: 20px; border-radius: 10px;">
+                    <input type="text" id="prodTitulo" placeholder="Título del producto">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="prodPrecio" placeholder="Precio ($)">
+                        <input type="number" id="prodStock" placeholder="Stock">
+                    </div>
+                    <select id="prodCategoria">
+                        <option value="dispositivos">Dispositivos Inteligentes</option>
+                        <option value="recargas">Recargas</option>
+                        <option value="monedas">Monedas</option>
+                    </select>
+                    <textarea id="prodDesc" placeholder="Descripción del producto"></textarea>
+                    <label>Métodos de Pago:</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" value="Efectivo" class="pago-check"> Efectivo</label>
+                        <label><input type="checkbox" value="Transferencia" class="pago-check"> Transf.</label>
+                        <label><input type="checkbox" value="Tarjeta" class="pago-check"> Tarjeta</label>
+                    </div>
+                    <label>Imágenes:</label>
+                    <input type="file" id="prodImagenes" multiple accept="image/*">
+                    <div class="botones-admin" style="margin-top: 15px;">
+                        <button id="btnAccionAdmin" onclick="agregarProducto()"
+                            style="background: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer;">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="filtros">
+            <button class="btn-filtro" data-cat="todos" onclick="filtrarProductos('todos')">Todo</button>
+            <button class="btn-filtro" data-cat="dispositivos" onclick="filtrarProductos('dispositivos')">Dispositivos</button>
+            <button class="btn-filtro" data-cat="recargas" onclick="filtrarProductos('recargas')">Recargas</button>
+            <button class="btn-filtro" data-cat="monedas" onclick="filtrarProductos('monedas')">Monedas</button>
+        </section>
+        
+        <!--DECLARACION DE SCROLL ENTRE PANELES DE PRODUCTOS Y ADMINISTRADOR ADMIN-->
+        <section id="area-productos" class="scroll-panel">
+            <div id="contenedor-productos" class="grid-productos">
+            </div>
+        </section>
+
+    </main>
+
+    <!--BOTONES DE INGRESO Y CARRITO-->
+
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🛒 Mi Carrito</h2>
+                <button class="close-btn" onclick="closeCart()">&times;</button>
+            </div>
+            <div id="cartItems"></div>
+            <div class="cart-total" id="cartTotal"></div>
+        </div>
+    </div>
+
+    <!--VENTANAS EMERGENTES PARA CONFIGURAR LA RECARGA Y PAGAR-->
+    <div class="modal" id="modalRecarga">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📱 Configurar Recarga</h2>
+                <button class="close-btn" onclick="cerrarModalRecarga()">&times;</button>
+            </div>
+            <div style="padding-top: 15px;">
+                <label>Selecciona Operadora:</label>
+                <select id="recargaOperadora" class="input-modal">
+                    <option value="Claro">Claro</option>
+                    <option value="Movistar">Movistar</option>
+                    <option value="CNT">CNT</option>
+                    <option value="Tuenti">Tuenti</option>
+                </select>
+
+                <label>Elige tu Combo:</label>
+                <select id="recargaCombo" class="input-modal">
+                    <option value="2">$2 - Combo Básico</option>
+                    <option value="4">$4 - Combo Redes</option>
+                    <option value="8">$8 - Combo Todo Ilimitado</option>
+                    <option value="10">$10 - Combo Gamer</option>
+                </select>
+
+
+                <label>Número de Celular:</label>
+                <input type="number" id="recargaNumero" class="input-modal" placeholder="Ej: 0991234567">
+
+                <button onclick="confirmarRecarga()"
+                    style="width:100%; background:#28a745; color:white; padding:10px; border:none; margin-top:15px; cursor:pointer;">Confirmar
+                    y Añadir</button>
+            </div>
+        </div>
+    </div>
+
+    <!--CLASE QUE PERMITE VISUALIZAR -->
+    <div class="modal" id="modalMonedas">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎮 Comprar Monedas</h2>
+                <button class="close-btn" onclick="cerrarModalMonedas()">&times;</button>
+            </div>
+            <div style="padding-top: 15px;">
+                <label>Selecciona Paquete:</label>
+                <select id="monedaPaquete" class="input-modal">
+                    <option data-precio="1" value="100">$1 - 100 monedas</option>
+                    <option data-precio="4" value="500">$4 - 500 monedas</option>
+                    <option data-precio="8" value="1200">$8 - 1200 monedas</option>
+                    <option data-precio="15" value="2500">$15 - 2500 monedas</option>
+                </select>
+
+                <label>Selecciona Juego:</label>
+                <select id="monedaJuego" class="input-modal">
+                    <option value="Free Fire">Free Fire</option>
+                    <option value="Roblox">Roblox</option>
+                    <option value="Call of Duty">Call of Duty</option>
+                    <option value="Otro">Otro</option>
+                </select>
+
+                <label>Usuario en el Juego:</label>
+                <input type="text" id="monedaUsuario" class="input-modal" placeholder="Tu usuario o ID">
+
+                <button onclick="confirmarMoneda()"
+                    style="width:100%; background:#28a745; color:white; padding:10px; border:none; margin-top:15px; cursor:pointer;">Confirmar
+                    y Añadir</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modalPago">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💳 Finalizar Compra</h2>
+                <button class="close-btn" onclick="cerrarModalPago()">&times;</button>
+            </div>
+
+            <div class="tabs-pago">
+                <button class="tab-btn active" onclick="cambiarMetodoPago('transferencia')">Transferencia</button>
+                <button class="tab-btn" onclick="cambiarMetodoPago('tarjeta')">Tarjeta</button>
+            </div>
+
+            <div id="pagoTransferencia" class="seccion-pago">
+                <div style="background: #f1f1f1; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                    <p><strong>Banco Pichincha</strong></p>
+                    <p>Cuenta: 2212546952</p>
+                    <p>Tipo: Ahorros</p>
+                </div>
+                <label>Subir Comprobante:</label>
+                <input type="file" id="comprobanteFile" class="input-modal">
+                <button onclick="procesarPago('transferencia')" class="btn-pagar">Confirmar Transferencia</button>
+            </div>
+
+            <div id="pagoTarjeta" class="seccion-pago" style="display: none;">
+                <input type="text" placeholder="Número de Tarjeta" class="input-modal">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" placeholder="MM/AA" class="input-modal">
+                    <input type="text" placeholder="CVV" class="input-modal">
+                </div>
+                <input type="text" placeholder="Nombre del Titular" class="input-modal">
+                <button onclick="procesarPago('tarjeta')" class="btn-pagar">Pagar con Tarjeta</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!--PIE DE PAGUINA-->
+    <footer class="site-footer">
+        <div class="footer-container">
+
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <a href="#">RC</a>
+                </div>
+                <p>Innovación y tecnología al alcance de tus manos. Encuentra lo último en gadgets y recargas al
+                    instante.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Explorar</h4>
+                <ul>
+                    <li><a href="#" onclick="window.scrollTo(0,0)">Inicio</a></li>
+                    <li><a href="#" onclick="filtrarProductos('dispositivos')">Dispositivos</a></li>
+                    <li><a href="#" onclick="filtrarProductos('recargas')">Recargas</a></li>
+                    <li><a href="#" onclick="mostrarLoginModal()">Mi Cuenta</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Conéctate</h4>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <p class="copyright">&copy; 2025 ReCell. Todos los derechos reservados.</p>
+            </div>
+            
+
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

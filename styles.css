@@ -1,0 +1,799 @@
+/* =========================================
+   1. RESET Y ESTILOS GENERALES
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Fuente tecnológica principal */
+    font-family: "Bitcount Prop Single", system-ui, sans-serif;
+    
+    /* Fondo degradado moderno (3 tonos) */
+    background: linear-gradient(135deg, #2c3e50 0%, #636e72 50%, #2d3436 100%);
+    background-attachment: fixed; /* El fondo se queda quieto al bajar */
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* =========================================
+   2. HEADER (Navegación)
+   ========================================= */
+header {
+    background-color: #1e272e; /* Color oscuro sólido para contraste elegante */
+    color: white;
+    padding: 0.5rem 2rem 1.5rem 2rem; /* Espacio extra abajo para la barra */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.logo a {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.logo a:hover {
+    color: #00c6fb; /* Brillo al pasar el mouse */
+}
+
+.header-buttons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Botones del Header */
+.btn-header {
+    font-family: "Bitcount Prop Single", system-ui, sans-serif;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-header:hover {
+    background-color: white;
+    color: #1e272e;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.cart-count {
+    background: #ff4757;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+/* =========================================
+   2.1. BARRA DE PROGRESO "DELFÍN" (ANIMACIÓN)
+   ========================================= */
+
+.progress-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px; /* Altura suficiente para la ola y el salto */
+    background: transparent;
+    z-index: 1001;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.progress-bar-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100%; /* Ocupa toda la altura del contenedor */
+    width: 0%;
+    
+    /* TRUCO: En lugar de un color sólido, usamos un dibujo de ola repetido */
+    background-color: transparent;
+    
+    /* Esta imagen SVG dibuja una ola azul rellena hacia abajo */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' preserveAspectRatio='none'%3E%3Cpath d='M0 40 V 25 Q 10 10 20 25 T 40 25 V 40 H 0 Z' fill='%2300c6fb'/%3E%3C/svg%3E");
+    
+    /* Tamaño de cada "ola": 40px de ancho */
+    background-size: 40px 40px; 
+    background-repeat: repeat-x; /* Se repite horizontalmente */
+    background-position: bottom left;
+    
+    /* Sombra para que brille como neón */
+    filter: drop-shadow(0 0 5px #00c6fb);
+    
+    transition: width 0.1s linear;
+}
+
+/* LA BOLITA (DELFÍN) */
+.progress-bar-wave::after {
+    content: '';
+    position: absolute;
+    right: -6px; /* Justo en la punta */
+    
+    /* Posición base (en el valle de la ola) */
+    top: 20px; 
+    
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    
+    /* Brillo intenso */
+    box-shadow: 
+        0 0 10px #fff, 
+        0 0 20px #00c6fb;
+    
+    /* Animación rápida y continua para seguir la forma de la ola */
+    animation: delfin-rastro 0.6s linear infinite;
+}
+
+/* ANIMACIÓN DEL SALTO PARA COINCIDIR CON LA OLA DE FONDO */
+@keyframes delfin-rastro {
+    0% { 
+        transform: translateY(0); /* Abajo (Valle) */
+    }
+    25% { 
+        transform: translateY(-15px); /* Arriba (Cresta de la ola) */
+    }
+    50% { 
+        transform: translateY(0); /* Abajo (Valle) */
+    }
+    75% { 
+        transform: translateY(5px); /* Pequeña inmersión */
+    }
+    100% { 
+        transform: translateY(0); /* Vuelta a empezar */
+    }
+}
+
+/* =========================================
+   3. SECCIÓN HERO (CARRUSEL)
+   ========================================= */
+.hero-carrusel {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    margin-bottom: -30px;
+    border-radius: 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    visibility: hidden;
+}
+
+.slide.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+.slide img, .slide video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Esto es vital: recorta el video para llenar el cuadro */
+    filter: brightness(0.6); /* Oscurece para leer el texto */
+    position: absolute; /* Asegura que se quede al fondo */
+    top: 0;
+    left: 0;
+}
+
+.slide-texto {
+    position: absolute;
+    bottom: 20%;
+    left: 10%;
+    color: white;
+    z-index: 10;
+    max-width: 600px;
+    transform: translateY(30px);
+    opacity: 0;
+    transition: all 0.8s ease-out 0.3s;
+}
+
+.slide.activo .slide-texto {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.slide-texto h2 {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(0,198,251,0.5);
+}
+
+.slide-texto p {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    font-family: "Bitcount Prop Single", system-ui, sans-serif;
+    color: #ddd;
+}
+
+.slide-texto button {
+    padding: 12px 30px;
+    background: transparent;
+    border: 2px solid #00c6fb;
+    color: #00c6fb;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 30px;
+    font-family: "Bitcount Prop Single", system-ui;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+
+.slide-texto button:hover {
+    background: #00c6fb;
+    color: black;
+    box-shadow: 0 0 20px #00c6fb;
+}
+
+/* =========================================
+   4. FILTROS Y PRODUCTOS
+   ========================================= */
+.filtros {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.filtros button, .btn-filtro {
+    font-family: "Bitcount Prop Single", system-ui;
+    padding: 10px 25px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    cursor: pointer;
+    border-radius: 25px;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+.filtros button:hover, .btn-filtro.active {
+    background: #00c6fb;
+    color: black;
+    border-color: #00c6fb;
+    box-shadow: 0 0 15px rgba(0, 198, 251, 0.5);
+}
+
+.grid-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.producto-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.producto-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.producto-card h3 {
+    font-family: "Bitcount Prop Single", system-ui;
+    font-size: 1.1rem;
+    margin: 15px 0;
+    color: #333;
+}
+
+.producto-card .precio {
+    font-size: 1.5rem;
+    color: #007bff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.carrusel {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.carrusel img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s;
+}
+
+.producto-card:hover .carrusel img {
+    transform: scale(1.1);
+}
+
+/* =========================================
+   5. MODALES Y ADMIN
+   ========================================= */
+.login-overlay, .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Fondo más oscuro */
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px); /* Efecto borroso de fondo */
+}
+
+.login-box, .modal-content {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    max-width: 450px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: red;
+}
+
+/* Panel Admin */
+#admin-panel {
+    background: white;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 800px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.formulario-producto input, 
+.formulario-producto select, 
+.formulario-producto textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.checkbox-group {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   6. MENÚ DESPLEGABLE DE USUARIO - CERRAR SESION(HOVER)
+   ========================================= */
+.user-menu-container {
+    position: relative;
+    display: inline-block;
+    height: 100%; /* Asegura altura completa */
+}
+
+.dropdown-logout {
+    display: none;
+    position: absolute;
+    top: 100%; 
+    right: 0;
+    background-color: transparent; /* Fondo transparente para el área de "puente" */
+    
+    /* TRUCO: Usamos padding en vez de margin para conectar el botón con el menú */
+    padding-top: 10px; 
+    
+    min-width: 180px;
+    z-index: 2000;
+}
+
+/* Este div interno lleva el estilo visual (blanco, sombra) */
+.dropdown-content {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.user-menu-container:hover .dropdown-logout {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+.dropdown-logout button {
+    width: 100%;
+    padding: 15px;
+    text-align: left;
+    background: white;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.2s;
+    border-bottom: 1px solid #eee;
+}
+
+.dropdown-logout button:hover {
+    background-color: #f8f9fa;
+    color: #ff4757;
+}
+
+/* =========================================
+   7. MODO ADMINISTRADOR (PANTALLA DIVIDIDA)
+   ========================================= */
+
+/* Contenedor Principal en Modo Admin */
+main.modo-admin-activo {
+    display: grid;
+    grid-template-columns: 350px 1fr; /* Panel Izq | Panel Der */
+    gap: 20px;
+    
+    /* CAMBIO CLAVE: Restamos más espacio (140px) para asegurar que no se salga de la pantalla por el Header */
+    height: calc(100vh - 140px); 
+    
+    /* Importante: Evita que la página entera haga scroll, forzando el scroll interno */
+    overflow: hidden; 
+    
+    width: 98%;
+    margin: 10px auto;
+    padding: 5px;
+}
+
+/* Estilos Genéricos para Paneles con Scroll */
+.scroll-panel {
+    height: 100%; /* Ocupa toda la altura del padre */
+    overflow-y: auto !important; /* !important fuerza que aparezca la barra si falta espacio */
+    padding-right: 10px;
+    
+    /* Estilo de la barra */
+    scrollbar-width: thin;
+    scrollbar-color: #00c6fb #1e272e;
+}
+
+/* AJUSTE ESPECÍFICO PARA LA LISTA DE PRODUCTOS (DERECHA) */
+#area-productos.scroll-panel {
+    display: block; /* Asegura comportamiento de bloque */
+    height: 100%;
+    
+    /* Espacio gigante abajo para que el último producto nunca quede tapado */
+    padding-bottom: 150px; 
+}
+
+/* Panel Izquierdo (Formulario) */
+main.modo-admin-activo #admin-panel {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    height: 100%; /* Asegura que ocupe el alto disponible */
+    overflow-y: auto; /* Scroll si el formulario es alto */
+}
+
+/* Rejilla de Productos */
+main.modo-admin-activo .grid-productos {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    /* Quitamos margin-bottom aquí porque lo maneja el padding del padre */
+    margin-bottom: 0; 
+}
+
+/* RESPONSIVE: Celulares */
+@media (max-width: 900px) {
+    main.modo-admin-activo {
+        display: block;
+        height: auto;
+        overflow: visible;
+    }
+    #area-productos.scroll-panel {
+        height: auto;
+        overflow: visible;
+        padding-bottom: 50px;
+    }
+}
+
+
+/* =========================================
+   8. CORRECCIONES DE SCROLL Y DESCRIPCIÓN
+   ========================================= */
+
+/* Control de la cajita de descripción */
+.descripcion-producto {
+    max-height: 80px; /* Le di un poco más de altura */
+    overflow-y: auto; 
+    margin: 10px 0;
+    background-color: #f9f9f9; /* Fondo gris claro para que notes que la caja existe */
+    padding: 8px; /* Espacio interno para que el texto no toque los bordes */
+    border-radius: 5px;
+    border: 1px solid #eee;
+    
+    /* Scrollbar fino estilo Tech */
+    scrollbar-width: thin;
+    scrollbar-color: #00c6fb #e0e0e0;
+}
+
+/* 2. EL ARREGLO CLAVE: El texto de adentro */
+.descripcion-producto p {
+    margin: 0 !important; /* IMPORTANTE: Quita el espacio vacío de arriba */
+    padding: 0;
+    font-size: 0.9rem;
+    color: #333; 
+    line-height: 1.4;
+    text-align: left;
+    white-space: pre-wrap; /* Respeta los saltos de línea que escribas */
+}
+
+/* Ajuste del Panel de Productos en Admin */
+main.modo-admin-activo {
+    height: calc(100vh - 120px); 
+    overflow: hidden;
+}
+
+#area-productos.scroll-panel {
+    overflow-y: auto;
+    padding-bottom: 80px; /* Espacio extra al final */
+}
+
+
+/* =========================================
+   9. ESTILOS DE MODALES NUEVOS (PAGO/RECARGA)
+   ========================================= */
+.input-modal {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Pestañas de Pago */
+.tabs-pago {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: #666;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn.active {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+}
+
+.btn-pagar {
+    width: 100%;
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    border: none;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.btn-pagar:hover {
+    background: #0056b3;
+}
+
+
+
+/* =========================================
+   10. PIE DE PÁGINA (FOOTER ESTILO TECH)
+   ========================================= */
+.site-footer {
+    background-color: #1e272e; /* Mismo tono oscuro elegante del Header */
+    color: #ecf0f1;
+    padding: 4rem 0 2rem 0;
+    margin-top: 80px;
+    
+    /* Borde superior neón para separar del contenido */
+    border-top: 3px solid #00c6fb;
+    box-shadow: 0 -10px 20px rgba(0, 198, 251, 0.1); /* Resplandor sutil hacia arriba */
+    
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    /* Columnas automáticas responsive */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+}
+
+/* Logo en el Footer */
+.footer-logo a {
+    font-family: "Bitcount Prop Single", system-ui;
+    font-size: 2.5rem;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: inline-block;
+    margin-bottom: 15px;
+    transition: 0.3s;
+}
+
+.footer-logo a:hover {
+    color: #00c6fb;
+    text-shadow: 0 0 15px #00c6fb;
+}
+
+.footer-col h4 {
+    font-family: "Bitcount Prop Single", system-ui;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: #00c6fb; /* Títulos en azul neón */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-col p {
+    font-family: "Bitcount Prop Single", system-ui;
+    color: #bdc3c7;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Lista de enlaces */
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-col ul li a {
+    font-family: "Bitcount Prop Single", system-ui;
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.footer-col ul li a:hover {
+    color: #00c6fb;
+    transform: translateX(5px); /* Pequeño movimiento a la derecha */
+}
+
+/* Redes Sociales */
+.social-icons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 1.5rem;
+}
+
+.social-icons a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.05); /* Fondo casi invisible */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    background: #00c6fb;
+    color: #1e272e; /* Icono se vuelve oscuro para contraste */
+    border-color: #00c6fb;
+    transform: translateY(-5px); /* Flota hacia arriba */
+    box-shadow: 0 0 15px #00c6fb;
+}
+
+.copyright {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    opacity: 0.5;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 1rem;
+}
